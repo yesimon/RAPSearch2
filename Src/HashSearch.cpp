@@ -463,27 +463,33 @@ int CHashSearch::BuildQHash(istream& input, int nQueryType, map<string,char>& mT
 	// init m_bSeqType & m_nIdxScl
 	m_nQueryType = nQueryType;
 	if (1 == m_nQueryType)
-		{
-			// nt
-			m_bSeqType = true;
-			m_nIdxScl = 6;
-			printf("Queries are nucleotide sequences in fasta format\n");
-		}
+	{
+	  // nt
+	  m_bSeqType = true;
+	  m_nIdxScl = 6;
+	  // Ummm, no output please, that will interfere with streaming to STDOUT
+	  // We *could* output to cerr though
+	  //printf("Queries are nucleotide sequences in fasta format\n");
+	}
 	else if (2 == m_nQueryType)
-		{
-			// aa
-			m_bSeqType = false;
-			printf("Queries are protein sequences\n");
-		}
+	{
+	  // aa
+	  m_bSeqType = false;
+	  // Ummm, no output please, that will interfere with streaming to STDOUT
+	  // We *could* output to cerr though
+	  //printf("Queries are protein sequences\n");
+	}
 	else if (3 == m_nQueryType)
-		{
-			// fastq
-			m_bSeqType = true;
-			m_nIdxScl = 6;
-			printf("Queries are nucleotide sequences in fastq format\n");
-			cIdSt = '@';
-			cSeqEd = '+';
-		}
+	{
+	  // fastq
+	  m_bSeqType = true;
+	  m_nIdxScl = 6;
+	  cIdSt = '@';
+	  cSeqEd = '+';
+	  // Ummm, no output please, that will interfere with streaming to STDOUT
+	  // We *could* output to cerr though
+	  //printf("Queries are nucleotide sequences in fastq format\n");
+	}
 
 	int nSeqNum = 0;
 
@@ -518,13 +524,13 @@ int CHashSearch::BuildQHash(istream& input, int nQueryType, map<string,char>& mT
 									// nt
 									m_bSeqType = true;
 									m_nIdxScl = 6;
-									printf("Queries are nucleotide sequences in fasta format\n");
+									// printf("Queries are nucleotide sequences in fasta format\n");
 								}
 							else if (2 == m_nQueryType)
 								{
 									// aa
 									m_bSeqType = false;
-									printf("Queries are protein sequences\n");
+									// printf("Queries are protein sequences\n");
 								}
 						}
 					else if (vPool[0] == '@')
@@ -532,7 +538,7 @@ int CHashSearch::BuildQHash(istream& input, int nQueryType, map<string,char>& mT
 							// fastq
 							m_bSeqType = true;
 							m_nIdxScl = 6;
-							printf("Queries are nucleotide sequences in fastq format\n");
+							// printf("Queries are nucleotide sequences in fastq format\n");
 							cIdSt = '@';
 							cSeqEd = '+';
 							m_nQueryType = 3;
@@ -787,7 +793,9 @@ void CHashSearch::Search(string& sDbPre, int nSeqNum, vector<uchar>& vQSeqs, vec
 	InitAlignPara(m_bSeqType, lnTotalAa, lnSeqNum, m_nThreadNum);
 
 	pool tp(m_nThreadNum);
-	cout << "start " << m_nThreadNum << "  threads" << endl;
+	// Ummm, no output please, that will interfere with streaming to STDOUT
+	// We *could* output to cerr though
+	// cout << "start " << m_nThreadNum << "  threads" << endl;
 
 	m_vOutIdx.assign(nSeqNum, CIndex());
 
