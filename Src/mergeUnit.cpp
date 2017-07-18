@@ -22,7 +22,7 @@ CMergeUnit::CMergeUnit(const char* szFile)
 	{
 		cout << "can not open temp file..." << endl;
 	}
-	
+
 	m_sFile.assign(szFile);
 
 	ifstream ifIdx((m_sFile+".idx").c_str());

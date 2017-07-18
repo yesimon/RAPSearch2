@@ -30,7 +30,7 @@ public:
 
 	// insert all hits <= sComplete into v, read next data block
 	void Update(int nID, std::vector<CHitUnit>& v);
-	
+
 	// get the ID of last element in this file
 	int GetLast();
 

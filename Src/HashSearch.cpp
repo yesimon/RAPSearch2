@@ -1,4 +1,3 @@
-
 #include "HashSearch.h"
 #include <cmath>
 #include <cstring>
@@ -56,7 +55,7 @@ CHashSearch::CHashSearch(int nThreadNum)
 		}
 
 		char* p = murphy10s[i];
-		for (uint j = 0; j < strlen(p); ++j) 
+		for (uint j = 0; j < strlen(p); ++j)
 		{
 			// use new format to fix alignment break in SEGed region
 			// the first four bits: group id
@@ -125,7 +124,7 @@ CHashSearch::CHashSearch(int nThreadNum)
 	m_llOutCum = 0;
 	m_llM8Cum = 0;
 	m_nSeqBase = 0;
-	
+
 	// for test on gap extension
 	m_unGapExt = 0;
 
@@ -197,9 +196,9 @@ int CHashSearch::BuildDHash(const char* szFile, string& sOutFile, int nSplitNum,
 {
 	/***************************************************************/
 	// revise the size of database according to rapsearch
-    long int lnSeqNum = 0;
+		long int lnSeqNum = 0;
 	long int lnAaNum = 0;
-    GuessTotSeq(szFile, lnSeqNum, lnAaNum);
+		GuessTotSeq(szFile, lnSeqNum, lnAaNum);
 
 	ifstream is(szFile);
 	is.seekg(0, ios::end);
@@ -214,16 +213,16 @@ int CHashSearch::BuildDHash(const char* szFile, string& sOutFile, int nSplitNum,
 	}
 
 	/***************************************************************/
-		
+
 	// the para for seed variants in both fast and slow mode
 	m_bFast = true;
-    ifstream ifFile(szFile);
-    if (!ifFile.good())
-    {
-        ifFile.close();
-        cout << "can not open the file: " << szFile << endl;
-        return -1;
-    }
+		ifstream ifFile(szFile);
+		if (!ifFile.good())
+		{
+				ifFile.close();
+				cout << "can not open the file: " << szFile << endl;
+				return -1;
+		}
 
 	ofstream of(sOutFile.c_str());
 	ofstream ofInfo((sOutFile+".info").c_str());
@@ -234,7 +233,7 @@ int CHashSearch::BuildDHash(const char* szFile, string& sOutFile, int nSplitNum,
 	}
 	archive::binary_oarchive oa(of);
 	archive::binary_oarchive oaInfo(ofInfo);
-	
+
 	// container for db para
 	MINDEX vHash(m_unTotalIdx, VUINT()); // all k-mer of database
 	VUINT vLens;
@@ -249,8 +248,8 @@ int CHashSearch::BuildDHash(const char* szFile, string& sOutFile, int nSplitNum,
 	POOL vPool(m_unDSize, 0);
 	int nBlock = 0;
 	uint unLeft = 0;
-    while (ifFile.good())
-    {
+		while (ifFile.good())
+		{
 		ifFile.read(&vPool[unLeft], m_unDSize-unLeft);
 		int nRead = ifFile.gcount();
 		ITER itStop = vPool.begin();
@@ -270,7 +269,7 @@ int CHashSearch::BuildDHash(const char* szFile, string& sOutFile, int nSplitNum,
 		ITER itSt = find(vPool.begin(), itStop, '>');
 		ITER itBeg = find(itSt, itStop, '\n');
 		ITER itEd = find(itBeg, itStop, '>');
-		
+
 		while (itEd != itStop)
 		{
 			vLens.push_back(0);
@@ -410,7 +409,7 @@ int CHashSearch::BuildDHash(const char* szFile, string& sOutFile, int nSplitNum,
 			oa << vHash;
 			oa << vNames;
 			oa << vComp;
-			
+
 			uint unTotalWord = 0;
 			for (uint i = 0; i < vHash.size(); ++i)
 			{
@@ -428,7 +427,7 @@ int CHashSearch::BuildDHash(const char* szFile, string& sOutFile, int nSplitNum,
 		unLeft = distance(itSt, vPool.end());
 		POOL::reverse_iterator itLast = find(vPool.rbegin(), vPool.rend(), '>');
 		copy(itSt, vPool.end(), vPool.begin());
-    }
+		}
 
 	//serialize
 	for (uint i = 0; i < vFreq.size(); ++i)
@@ -464,267 +463,267 @@ int CHashSearch::BuildQHash(istream& input, int nQueryType, map<string,char>& mT
 	// init m_bSeqType & m_nIdxScl
 	m_nQueryType = nQueryType;
 	if (1 == m_nQueryType)
-	{
-		// nt
-        m_bSeqType = true;
-		m_nIdxScl = 6;
-        printf("Queries are nucleotide sequences in fasta format\n");
-	}
+		{
+			// nt
+			m_bSeqType = true;
+			m_nIdxScl = 6;
+			printf("Queries are nucleotide sequences in fasta format\n");
+		}
 	else if (2 == m_nQueryType)
-	{
-		// aa
-        m_bSeqType = false;
-        printf("Queries are protein sequences\n");
-	}
+		{
+			// aa
+			m_bSeqType = false;
+			printf("Queries are protein sequences\n");
+		}
 	else if (3 == m_nQueryType)
-	{
-		// fastq
-        m_bSeqType = true;
-		m_nIdxScl = 6;
-        printf("Queries are nucleotide sequences in fastq format\n");
-		cIdSt = '@';
-		cSeqEd = '+';
-	}
+		{
+			// fastq
+			m_bSeqType = true;
+			m_nIdxScl = 6;
+			printf("Queries are nucleotide sequences in fastq format\n");
+			cIdSt = '@';
+			cSeqEd = '+';
+		}
 
 	int nSeqNum = 0;
 
 	POOL vPool(m_unQSize, 0);
 	if (!m_sLeft.empty())
-	{
-		copy(m_sLeft.begin(), m_sLeft.end(), vPool.begin());
-	}
-
-    if (input.good())
-    {
-		input.read(&vPool[0]+m_sLeft.size(), m_unQSize-m_sLeft.size());
-		int nRead = input.gcount();
-		if (nRead+m_sLeft.size() == 0)
 		{
-			return 0;
+			copy(m_sLeft.begin(), m_sLeft.end(), vPool.begin());
 		}
 
-		if (m_sLeft.size()+nRead < m_unQSize)
+	if (input.good())
 		{
-			// for last block of data, give it a '>' to split the last sequence
-			vPool[m_sLeft.size()+nRead] = cIdSt;
-		}
-
-		if (m_nQueryType == 0)
-		{
-			if (vPool[0] == '>')
-			{
-				m_nQueryType = GuessQueryType(vPool);
-				if (1 == m_nQueryType)
+			input.read(&vPool[0]+m_sLeft.size(), m_unQSize-m_sLeft.size());
+			int nRead = input.gcount();
+			if (nRead+m_sLeft.size() == 0)
 				{
-					// nt
-					m_bSeqType = true;
-					m_nIdxScl = 6;
-					printf("Queries are nucleotide sequences in fasta format\n");
+					return 0;
 				}
-				else if (2 == m_nQueryType)
-				{
-					// aa
-					m_bSeqType = false;
-					printf("Queries are protein sequences\n");
-				}
-			}
-			else if (vPool[0] == '@')
-			{
-				// fastq
-				m_bSeqType = true;
-				m_nIdxScl = 6;
-				printf("Queries are nucleotide sequences in fastq format\n");
-				cIdSt = '@';
-				cSeqEd = '+';
-				m_nQueryType = 3;
-			}
-		}
 
-		ITER itStop = vPool.begin();
-		if (m_sLeft.size()+nRead < m_unQSize)
-		{
-			advance(itStop, m_sLeft.size()+nRead+1);
-		}
-		else
-		{
-			if (3 == m_nQueryType)
-			{
-				ITER itTemp = itStop;
-				bool bFound = true;
-				while (bFound)
+			if (m_sLeft.size()+nRead < m_unQSize)
 				{
-					bFound = true;
-					for (int i = 0; i < 4; ++i)
-					{
-						itTemp = find(++itTemp, vPool.end(), '\n');
-						if (vPool.end() == itTemp)
+					// for last block of data, give it a '>' to split the last sequence
+					vPool[m_sLeft.size()+nRead] = cIdSt;
+				}
+
+			if (m_nQueryType == 0)
+				{
+					if (vPool[0] == '>')
 						{
-							bFound = false;
-							break;
+							m_nQueryType = GuessQueryType(vPool);
+							if (1 == m_nQueryType)
+								{
+									// nt
+									m_bSeqType = true;
+									m_nIdxScl = 6;
+									printf("Queries are nucleotide sequences in fasta format\n");
+								}
+							else if (2 == m_nQueryType)
+								{
+									// aa
+									m_bSeqType = false;
+									printf("Queries are protein sequences\n");
+								}
 						}
-					}
-					if (vPool.end() != itTemp)
-					{
-						itStop = ++itTemp;
-					}
+					else if (vPool[0] == '@')
+						{
+							// fastq
+							m_bSeqType = true;
+							m_nIdxScl = 6;
+							printf("Queries are nucleotide sequences in fastq format\n");
+							cIdSt = '@';
+							cSeqEd = '+';
+							m_nQueryType = 3;
+						}
 				}
-				m_sLeft.clear();
-				m_sLeft.assign(itStop, vPool.end());
-				++itStop;
-			}
+
+			ITER itStop = vPool.begin();
+			if (m_sLeft.size()+nRead < m_unQSize)
+				{
+					advance(itStop, m_sLeft.size()+nRead+1);
+				}
 			else
-			{
-				POOL::reverse_iterator rit = find(vPool.rbegin(), vPool.rend(), cIdSt);
-				while ('\n' != *(++rit))
 				{
-					rit = find(rit, vPool.rend(), '>');
-				}
-				int n = distance(rit, vPool.rbegin());
-				uint unLeft = m_unQSize + n + 1;
-				m_sLeft.clear();
-				m_sLeft.assign(vPool.begin()+(unLeft-1), vPool.end());
-				itStop = vPool.begin() + unLeft;
-			}
-		}
-		vPool.resize(distance(vPool.begin(), itStop));
-		itStop = vPool.end();
-
-		vLens.push_back(0);
-
-		ITER itSt = find(vPool.begin(), itStop, cIdSt);
-		ITER itBeg = find(itSt, itStop, '\n');
-		ITER itEd = find(itBeg, itStop, cSeqEd);
-		if (true == m_bSeqType)
-		{
-			// query is dna
-			vector<char> vTran;
-			vTran.reserve(1024);
-			while (itEd != itStop)
-			{
-				++itBeg;
-				vNames.push_back(/*'>'+*/string(itSt+1, find(itSt+1, itBeg-1, ' ')));
-				vector<char> vS(itBeg, itEd-1);
-				for (ITER itUpper = vS.begin(); itUpper != vS.end(); ++itUpper)
-				{
-					if (*itUpper >= 'a' && *itUpper <= 'z')
-					{
-						*itUpper = *itUpper - 'a' + 'A';
-					}
-				}
-
-				vS.erase(remove(vS.begin(), vS.end(), '\r'), vS.end());
-				vS.erase(remove(vS.begin(), vS.end(), '\n'), vS.end());
-				int x = vS.size();
-				for (int nFrame = 0; nFrame < 6; ++nFrame)
-				{
-					vTran.clear();
-
-					if (3 == nFrame)
-					{
-						// backward
-						reverse(vS.begin(), vS.end());
-						for (uint nn = 0; nn < vS.size(); ++nn)
+					if (3 == m_nQueryType)
 						{
-							map<char, char>::iterator it = mComple.find(vS[nn]);
-							if (it != mComple.end())
-							{
-								vS[nn] = it->second;
-							}
-							else
-							{
-								vS[nn] = 'N';
-							}
+							ITER itTemp = itStop;
+							bool bFound = true;
+							while (bFound)
+								{
+									bFound = true;
+									for (int i = 0; i < 4; ++i)
+										{
+											itTemp = find(++itTemp, vPool.end(), '\n');
+											if (vPool.end() == itTemp)
+												{
+													bFound = false;
+													break;
+												}
+										}
+									if (vPool.end() != itTemp)
+										{
+											itStop = ++itTemp;
+										}
+								}
+							m_sLeft.clear();
+							m_sLeft.assign(itStop, vPool.end());
+							++itStop;
 						}
-					}
-
-					// translate
-					char* pSt = &vS[0] + nFrame%3;
-					char* pEd = pSt + ((x-nFrame%3)/3)*3;
-
-					for (; pSt < pEd; pSt += 3)
-					{
-						map<string, char>::iterator it = mTransTable.find(string(pSt, 3));
-						if (it != mTransTable.end())
-						{
-							vTran.push_back(it->second);
-						}
-						else
-						{
-							vTran.push_back(UNKNOWN_AA);
-						}
-					}
-					vTran.push_back('\0');
-
-					// mark the sequence
-					char* pMasked = NULL;
-					if (vTran.size()-1 >= 12)
-					{
-						pMasked = seg -> maskseq(&vTran[0]);
-					}
 					else
-					{
-						pMasked = segsht -> maskseq(&vTran[0]);
-					}
-
-					for (uint i = 0; i < strlen(pMasked); ++i)
-					{
-						if ('X' == pMasked[i] || 'x' == pMasked[i])
 						{
-							//vTran[i] = pMasked[i];
-							vTran[i] += 128;
+							POOL::reverse_iterator rit = find(vPool.rbegin(), vPool.rend(), cIdSt);
+							while ('\n' != *(++rit))
+								{
+									rit = find(rit, vPool.rend(), '>');
+								}
+							int n = distance(rit, vPool.rbegin());
+							uint unLeft = m_unQSize + n + 1;
+							m_sLeft.clear();
+							m_sLeft.assign(vPool.begin()+(unLeft-1), vPool.end());
+							itStop = vPool.begin() + unLeft;
 						}
-					}
-
-					delete [] pMasked;
-
-					// a char '\0' was added at the end of vTran, so now ignore it
-					vSeqs.insert(vSeqs.end(), vTran.begin(), vTran.end()-1);
-					vLens.push_back(vSeqs.size());
 				}
+			vPool.resize(distance(vPool.begin(), itStop));
+			itStop = vPool.end();
 
-				itSt = itEd;
-				if (3 == m_nQueryType)
+			vLens.push_back(0);
+
+			ITER itSt = find(vPool.begin(), itStop, cIdSt);
+			ITER itBeg = find(itSt, itStop, '\n');
+			ITER itEd = find(itBeg, itStop, cSeqEd);
+			if (true == m_bSeqType)
 				{
-					itSt = find(itSt, itStop, '\n');
-					++itSt;
-					itSt = find(itSt, itStop, '\n');
-					++itSt;
-				}
-				itBeg = find(itSt, itStop, '\n');
-				itEd = find(itBeg, itStop, cSeqEd);
-			}
-		}
-		else
-		{
-			while (itEd != itStop)
-			{
-				++itBeg;
-				vNames.push_back(string(itSt+1, find(itSt+1, itBeg-1, ' ')));
+					// query is dna
+					vector<char> vTran;
+					vTran.reserve(1024);
+					while (itEd != itStop)
+						{
+							++itBeg;
+							vNames.push_back(/*'>'+*/string(itSt+1, find(itSt+1, itBeg-1, ' ')));
+							vector<char> vS(itBeg, itEd-1);
+							for (ITER itUpper = vS.begin(); itUpper != vS.end(); ++itUpper)
+								{
+									if (*itUpper >= 'a' && *itUpper <= 'z')
+										{
+											*itUpper = *itUpper - 'a' + 'A';
+										}
+								}
 
-				for (ITER itUpper = itBeg; itUpper != itEd-1; ++itUpper)
+							vS.erase(remove(vS.begin(), vS.end(), '\r'), vS.end());
+							vS.erase(remove(vS.begin(), vS.end(), '\n'), vS.end());
+							int x = vS.size();
+							for (int nFrame = 0; nFrame < 6; ++nFrame)
+								{
+									vTran.clear();
+
+									if (3 == nFrame)
+										{
+											// backward
+											reverse(vS.begin(), vS.end());
+											for (uint nn = 0; nn < vS.size(); ++nn)
+												{
+													map<char, char>::iterator it = mComple.find(vS[nn]);
+													if (it != mComple.end())
+														{
+															vS[nn] = it->second;
+														}
+													else
+														{
+															vS[nn] = 'N';
+														}
+												}
+										}
+
+									// translate
+									char* pSt = &vS[0] + nFrame%3;
+									char* pEd = pSt + ((x-nFrame%3)/3)*3;
+
+									for (; pSt < pEd; pSt += 3)
+										{
+											map<string, char>::iterator it = mTransTable.find(string(pSt, 3));
+											if (it != mTransTable.end())
+												{
+													vTran.push_back(it->second);
+												}
+											else
+												{
+													vTran.push_back(UNKNOWN_AA);
+												}
+										}
+									vTran.push_back('\0');
+
+									// mark the sequence
+									char* pMasked = NULL;
+									if (vTran.size()-1 >= 12)
+										{
+											pMasked = seg -> maskseq(&vTran[0]);
+										}
+									else
+										{
+											pMasked = segsht -> maskseq(&vTran[0]);
+										}
+
+									for (uint i = 0; i < strlen(pMasked); ++i)
+										{
+											if ('X' == pMasked[i] || 'x' == pMasked[i])
+												{
+													//vTran[i] = pMasked[i];
+													vTran[i] += 128;
+												}
+										}
+
+									delete [] pMasked;
+
+									// a char '\0' was added at the end of vTran, so now ignore it
+									vSeqs.insert(vSeqs.end(), vTran.begin(), vTran.end()-1);
+									vLens.push_back(vSeqs.size());
+								}
+
+							itSt = itEd;
+							if (3 == m_nQueryType)
+								{
+									itSt = find(itSt, itStop, '\n');
+									++itSt;
+									itSt = find(itSt, itStop, '\n');
+									++itSt;
+								}
+							itBeg = find(itSt, itStop, '\n');
+							itEd = find(itBeg, itStop, cSeqEd);
+						}
+				}
+			else
 				{
-					if (*itUpper >= 'a' && *itUpper <= 'z')
-					{
-						*itUpper = *itUpper - 'a' + 'A';
-					}
+					while (itEd != itStop)
+						{
+							++itBeg;
+							vNames.push_back(string(itSt+1, find(itSt+1, itBeg-1, ' ')));
+
+							for (ITER itUpper = itBeg; itUpper != itEd-1; ++itUpper)
+								{
+									if (*itUpper >= 'a' && *itUpper <= 'z')
+										{
+											*itUpper = *itUpper - 'a' + 'A';
+										}
+								}
+
+							int nIter = vSeqs.size();
+							vSeqs.insert(vSeqs.end(), itBeg, itEd-1);
+							vSeqs.erase(remove(vSeqs.begin()+nIter, vSeqs.end(), '\r'), vSeqs.end());
+							vSeqs.erase(remove(vSeqs.begin()+nIter, vSeqs.end(), '\n'), vSeqs.end());
+							vLens.push_back(vSeqs.size());
+
+							itSt = itEd;
+							itBeg = find(itSt, itStop, '\n');
+							itEd = find(itBeg, itStop, cSeqEd);
+						}
 				}
 
-				int nIter = vSeqs.size();
-				vSeqs.insert(vSeqs.end(), itBeg, itEd-1);
-				vSeqs.erase(remove(vSeqs.begin()+nIter, vSeqs.end(), '\r'), vSeqs.end());
-				vSeqs.erase(remove(vSeqs.begin()+nIter, vSeqs.end(), '\n'), vSeqs.end());
-				vLens.push_back(vSeqs.size());
+			Encode(vSeqs);
 
-				itSt = itEd;
-				itBeg = find(itSt, itStop, '\n');
-				itEd = find(itBeg, itStop, cSeqEd);
-			}
+			nSeqNum += vNames.size();
 		}
-
-		Encode(vSeqs);
-		
-		nSeqNum += vNames.size();
-    }
 
 	return nSeqNum;
 }
@@ -760,7 +759,7 @@ void CHashSearch::Search(string& sDbPre, int nSeqNum, vector<uchar>& vQSeqs, vec
 		if4.close();
 		return;
 	}
-	
+
 	// construct query package
 	CQrPckg Query(vQSeqs, vQLens, vQNames);
 
@@ -839,7 +838,7 @@ void CHashSearch::Search(string& sDbPre, int nSeqNum, vector<uchar>& vQSeqs, vec
 		{
 
 			m_unTotalQuery += vQLens.size() - 1;
-			
+
 			// generate results
 			for (uint k = 0; k < vQLens.size()-1; k+=m_nIdxScl)
 			{
@@ -851,7 +850,7 @@ void CHashSearch::Search(string& sDbPre, int nSeqNum, vector<uchar>& vQSeqs, vec
 
 			m_nSeqBase += vQNames.size();
 		}
-		
+
 	}
 	tp.wait();
 
@@ -890,23 +889,23 @@ void CHashSearch::Process(char* szDBFile, char* szQFile, char* szOFile, int nStd
 	}
 	m_dThr = dThr;
 	if (m_bLogE == false)
-	{
-		//m_dThr = log(m_dThr);
-                m_dThr = log(m_dThr) / log(10);
-                //needs to be log_10, YY, Sep 2016
-	}
+		{
+			//m_dThr = log(m_dThr);
+			m_dThr = log(m_dThr) / log(10);
+			//needs to be log_10, YY, Sep 2016
+		}
 	if (nMaxOut == -1)
-	{
-		m_nMaxOut = LLONG_MAX;
-	}
+		{
+			m_nMaxOut = LLONG_MAX;
+		}
 	else
-	{
-		m_nMaxOut = abs(nMaxOut);
-	}
+		{
+			m_nMaxOut = abs(nMaxOut);
+		}
 	if (nMaxM8 == -1)
-	{
-		m_nMaxM8 = LLONG_MAX;
-	}
+		{
+			m_nMaxM8 = LLONG_MAX;
+		}
 	else
 	{
 		m_nMaxM8 = abs(nMaxM8);
@@ -1014,11 +1013,11 @@ void CHashSearch::Process(char* szDBFile, char* szQFile, char* szOFile, int nStd
 		mComple['g'] = 'c';
 		mComple['U'] = 'A';
 		mComple['u'] = 'a';
-		
+
 		seg = new Seg(LGERSEED);
 		segsht = new Seg(DEFSEED);
 	}
-	
+
 	vector<uchar> vQSeqs;
 	vector<uint> vQLens;
 	VNAMES vQNames;
@@ -1127,7 +1126,7 @@ void CHashSearch::Searching(int k, CQrPckg& Query, CDbPckg& Db)
 
 		uchar* pQ = &Query.m_vSeqs[0] + Query.m_vLens[nQrIdx];
 		CAlnPckg QrAln(pQ, unQLen, 0);
-		
+
 		// build invalid index position
 		vector<char> vValid(unQLen, 0);
 		for (uint xx = 0; xx < unQLen; ++xx)
@@ -1154,43 +1153,43 @@ void CHashSearch::Searching(int k, CQrPckg& Query, CDbPckg& Db)
 			{
 				continue;
 			}
-			uint unLocalSeed = 0; 
+			uint unLocalSeed = 0;
 			uint unIdx = 0;
 			if (m_bAcc == false)
 			{
-				uint unIncr = 0; 
+				uint unIncr = 0;
 				double	dFold = 0.0;
 				int nLeft = unQLen - unQSeedBeg - m_unMer;
 				uint unRng = nLeft+1 >= 3 ? 3 : nLeft+1;
 				//uint unFreq = Db.m_vHash[nSeed].size();
 				uint unFreq = Db.m_vWordCnts[nSeed];
-				if(unFreq <= Db.m_unMedian) 
+				if(unFreq <= Db.m_unMedian)
 				{
 					unLocalSeed = m_unMer;
 				}
 				else
 				{
-					double 	dExpFreq = unFreq;
+					double		dExpFreq = unFreq;
 					for(unIncr = 1; unIncr < unRng; unIncr ++)
 					{
 						if((unIdx = vValid[unQSeedBeg+m_unMer+unIncr-1]) != m_uMask)
 						{
 							dFold = Db.m_vFreq[unIdx];
 						}
-						else 
+						else
 						{
 							//dFold = 1.0 / strlen(murphy10r);
 							break;
 						}
 						dExpFreq *= dFold;
-						if(dExpFreq <= Db.m_unMedian) 
+						if(dExpFreq <= Db.m_unMedian)
 						{
 							break;
 						}
 					}
 					unLocalSeed = m_unMer + unIncr;
 				}
-				
+
 				// if there is a unacceptable char, give up this seed
 				if (m_uMask == unIdx)
 				{
@@ -1257,7 +1256,7 @@ void CHashSearch::Searching(int k, CQrPckg& Query, CDbPckg& Db)
 			{
 				continue;
 			}
-			
+
 			// mutation, pos: 4, 5, 3, (6)
 			// check whether or not the length is enough
 			if (unQLen < unQSeedBeg+m_unMutSeedLen)
@@ -1667,10 +1666,10 @@ int CHashSearch::ExtendSeq2Set(int nSeed, uint unLocalSeedLen, vector<uchar>& vE
 		{
 			int zya = 0;
 		}
-				
+
 		uint unDLen, unDSeedBeg;
 		uchar* pD = GetSeq(Db.m_vSeqs, Db.m_vLens, Db.m_vNames, vDSet[j], unDLen, unDSeedBeg);
-		
+
 		// no enough letters
 		if (unDLen < unDSeedBeg + unLocalSeedLen)
 		{
@@ -1678,7 +1677,7 @@ int CHashSearch::ExtendSeq2Set(int nSeed, uint unLocalSeedLen, vector<uchar>& vE
 		}
 		// have the same previous char, so don't extend them at this time
 		if (4 != vExtra.size()	 // if this is a mutation case, do not allow to ignore it
-			&& m_bAcc==false 
+			&& m_bAcc==false
 			&& 0 != QrAln.m_unSeedBeg
 			&& 0 != unDSeedBeg
 			&& m_aCode2Ten[QrAln.m_pSeq[QrAln.m_unSeedBeg-1]] == m_aCode2Ten[pD[unDSeedBeg-1]]
@@ -1875,87 +1874,87 @@ int CHashSearch::AlignFwd(uchar *queryseq, uchar *dataseq, uint len_queryseq, ui
 	int   i, j, l, s, maxs, ma;
 
 	i = j = l = 0;
-    ma = 0;
-    maxs = s = score0;
-    *extl = 0;
-    *match = 0;
-    while(i < len_queryseq && j < len_dataseq && s >= MINSCORE && s >= maxs - UngapExtDrop)
-    {
-		// uncompleted
-        s += m_aSubMatrix[queryseq[i]][dataseq[j]];
-        if(queryseq[i] == dataseq[j])
-        {
-            ma ++;
-        }
-        l ++;
-        if(s > maxs)
-        {
-            maxs = s;
-            *extl = l;
-            *match = ma;
-        }
-        i ++;
-        j ++;
-    }
-    return maxs - score0;
+	ma = 0;
+	maxs = s = score0;
+	*extl = 0;
+	*match = 0;
+	while(i < len_queryseq && j < len_dataseq && s >= MINSCORE && s >= maxs - UngapExtDrop)
+		{
+			// uncompleted
+			s += m_aSubMatrix[queryseq[i]][dataseq[j]];
+			if(queryseq[i] == dataseq[j])
+				{
+					ma ++;
+				}
+			l ++;
+			if(s > maxs)
+				{
+					maxs = s;
+					*extl = l;
+					*match = ma;
+				}
+			i ++;
+			j ++;
+		}
+	return maxs - score0;
 }
 
 
 int CHashSearch::AlignBwd(uchar *queryseq, uchar *dataseq, int pos1, int pos2, int *extl, int *match, int score0)
 {
-    int   i, j, l, s, maxs, ma;
+		int   i, j, l, s, maxs, ma;
 
-    i = pos1;
-    j = pos2;
-    l = 0;
-    ma = 0;
-    maxs = s = score0;
-    *match = *extl = 0;
-    while(i >= 0 && j >= 0 && s >= MINSCORE && s >= maxs - UngapExtDrop)
-    {
-        //	Skip stop codons
+		i = pos1;
+		j = pos2;
+		l = 0;
+		ma = 0;
+		maxs = s = score0;
+		*match = *extl = 0;
+		while(i >= 0 && j >= 0 && s >= MINSCORE && s >= maxs - UngapExtDrop)
+		{
+				//	Skip stop codons
 		//	uncompleted
-        s += m_aSubMatrix[queryseq[i]][dataseq[j]];
-        if(queryseq[i] == dataseq[j])
-        {
-            ma ++;
-        }
-        l ++;
-        if(s > maxs)
-        {
-            maxs = s;
-            *extl = l;
-            *match = ma;
-        }
-        i --;
-        j --;
-    }
-    return maxs - score0;
+				s += m_aSubMatrix[queryseq[i]][dataseq[j]];
+				if(queryseq[i] == dataseq[j])
+				{
+						ma ++;
+				}
+				l ++;
+				if(s > maxs)
+				{
+						maxs = s;
+						*extl = l;
+						*match = ma;
+				}
+				i --;
+				j --;
+		}
+		return maxs - score0;
 }
 
 
 int CHashSearch::AlignGapped(uchar *seq1, uchar *seq2, int M, int N, int *ext1, int *ext2, int *match_len, int *gap, vector<char>& vMode, vector<short>& vLen, int nTreadID)
 {
-    int	i, j;
-    int	t, s, e, c, d, wa;
-    int	*CC = new int[N + 1]; //note N + 1
-    int	*DD = new int[N + 1];
-    int	g = GapIni;
-    int	h = GapExt;
-    int	m = g + h; //gap-create + gap-extend
-    int	maxs, E1, E2, match;
-    char	trace_e, trace_d;
-    maxs = E1 = E2 = match = 0;
+	int	i, j;
+	int	t, s, e, c, d, wa;
+	int	*CC = new int[N + 1]; //note N + 1
+	int	*DD = new int[N + 1];
+	int	g = GapIni;
+	int	h = GapExt;
+	int	m = g + h; //gap-create + gap-extend
+	int	maxs, E1, E2, match;
+	char	trace_e, trace_d;
+	maxs = E1 = E2 = match = 0;
 
-    //forward-phase
-    CC[0] = 0;
-    DD[0] = -g;
-    t = -g;
+	//forward-phase
+	CC[0] = 0;
+	DD[0] = -g;
+	t = -g;
 
-    int	bb = 1; //band_begin
-    int	be = int((GapExtDrop - GapIni) / GapExt);
-    int	bb_pre, be_pre;
-    //these two parameters will be adjusted during the alignment based on the dropoff score
+	int	bb = 1; //band_begin
+	int	be = int((GapExtDrop - GapIni) / GapExt);
+	int	bb_pre, be_pre;
+	//these two parameters will be adjusted during the alignment based on the dropoff score
 
 	vector<vector<char> >& trace = m_vTrace[nTreadID];
 	vector<vector<char> >& etrace = m_vETrace[nTreadID];
@@ -1965,231 +1964,231 @@ int CHashSearch::AlignGapped(uchar *seq1, uchar *seq2, int M, int N, int *ext1, 
 	bool bModify = false;
 	int nMemory = trace.size();
 	if (trace.size()-1 < M)
-	{
-		int nSz = M+1;
-		bModify = true;
-		trace.clear();
-		etrace.clear();
-		dtrace.clear();
-		trace.assign(nSz, vector<char>(nSz));
-		etrace.assign(nSz, vector<char>(nSz));
-		dtrace.assign(nSz, vector<char>(nSz));
-	}
-
-    trace[0][0] = '0';
-    for(j = 1; j <= N && j <= be; j ++)
-    {
-        CC[j] = t = t - h; //j - 1 ? or j; when j is used, check score is not the same as alignment score
-        DD[j] = CC[j] - g;
-        if(j == 1)
-        {
-            trace[0][j] = etrace[0][j] = 'E';
-        }
-        else
-        {
-            trace[0][j] = etrace[0][j] = 'e';
-        }
-        dtrace[0][j] = 'D';
-    } //global-alignment, with terminal penalty
-
-    MaxGap = 100;
-    for(i = 1; i <= M; i ++)
-    {
-        bb_pre = bb;
-        be_pre = be;
-        if(be <= bb) break; //band shrinks to zero
-        s = CC[bb - 1];
-        if(i == 1)
-        {
-            trace[i][bb - 1] = dtrace[i][bb - 1] = 'D';
-            etrace[i][bb - 1] = 'E';
-        }
-        else
-        {
-            trace[i][bb - 1] = dtrace[i][bb - 1] = 'd';
-            etrace[i][bb - 1] = 'e';
-        }
-        if(DD[bb - 1] - h > CC[bb - 1] - m)
-        {
-            c = DD[bb - 1] - h;
-        }
-        else
-        {
-            c = CC[bb - 1] - m;
-        }
-        CC[bb - 1] = DD[bb - 1] = c; //update it with current row
-        e = c - g;
-        for(j = bb; j <= be && j <= N; j ++)
-        {
-            trace_e = 'e'; //insertion extension
-            if ((c =   c   - m) >= (e =   e   - h))
-            {
-                e = c;
-                trace_e = 'E';  //new insertion
-            }//insertion
-            trace_d = 'd'; //deletion extension
-            if ((c = CC[j] - m) >= (d = DD[j] - h))
-            {
-                d = c;
-                trace_d = 'D'; //new deletion
-            }//deletion
-            //here   CC[j]==CC[i-1][j]   DD[j]==DD[i-1][j]
-
-            wa = m_aSubMatrix[seq1[i - 1]][seq2[j - 1]];
-            //sij[i - 1][j - 1]; //note i - 1, j - 1
-            c = s + wa; //s==CC[i-1][j-1], substitution
-            trace[i][j] = 's'; //substitution
-
-            if (e > c)
-            {
-                c = e;
-                trace[i][j] = trace_e;
-            }
-            if (d > c)
-            {
-                c = d;
-                trace[i][j] = trace_d;
-            }
-            etrace[i][j] = trace_e;
-            dtrace[i][j] = trace_d;
-            s = CC[j]; //important for next replace
-            CC[j] = c; //CC[i][j]
-            DD[j] = d; //DD[i][j]
-            if(c > maxs)
-            {
-                E1 = i;
-                E2 = j;
-                maxs = c;
-            } //local -C
-            else if(c < maxs - GapExtDrop && j > E2)   //score drops too much, stop filling this row, note j > E2
-            {
-                be = j;
-                break;
-            }
-        }
-        //after band_e, only allows insertion
-        if(be < be_pre) continue;
-        for(j = be + 1; j <= N; j ++)
-        {
-            trace_e = 'e'; //insertion extension
-            if ((c =   c   - m) > (e =   e   - h))
-            {
-                e = c;
-                trace_e = 'E';  //new insertion
-            }//insertion
-            c = e;
-            trace[i][j] = trace_e;
-            etrace[i][j] = trace_e;
-
-            s = CC[j]; //important for next replace
-            CC[j] = c; //CC[i][j]
-            DD[j] = c - g;
-            if(c > maxs)
-            {
-                E1 = i;
-                E2 = j;
-                maxs = c;
-            } //local -C
-            else if(c < maxs - GapExtDrop)   //score drops too much, stop filling this row
-            {
-                be = j;
-                break;
-            }
-        }
-        //now infer new bb (starting from E2 going backward)
-        for(j = E2; j >= bb; j --)
-        {
-            if(CC[j] < maxs - GapExtDrop)
-            {
-                bb = j;
-                break;
-            }
-        }
-    }
-
-    *ext1 = E1;
-    *ext2 = E2;
-
-    delete[] CC;
-    delete[] DD;
-
-    //get alignment
-    *match_len = 0;
-    *gap = 0;
-
-    if(maxs <= 0) return maxs;
-
-	
-    if(trace[E1][E2] != 's')
-    {
-        printf("E1 %d E2 %d, Not end with substitution %c\n", E1, E2, trace[E1][E2]);
-        exit(1);
-    }
-	
-    char	mod = trace[E1][E2];
-    i = E1;
-    j = E2;
-    vMode.clear();
-    vLen.clear();
-    while(mod != '0' && (!(i == 0 && j == 0)))
-    {
-        if (vMode.empty() || toupper(mod) != toupper(vMode.back()))
-        {
-			vMode.push_back(mod);
-			vLen.push_back(0);
-        }
-		++vLen.back();
-		
-        if(mod == 's')
-        {
-            if(seq1[i - 1] == seq2[j - 1]) *match_len += 1;
-            i -= 1;
-            j -= 1;
-            mod = trace[i][j];
-        }
-        else if(mod == 'D' || mod == 'd')
-        {
-            i -= 1;
-            if (mod == 'D')	mod = trace[i][j];
-            else 	mod = dtrace[i][j];
-            *gap += 1;
-        }
-        else
-        {
-            j -= 1;
-            if (mod == 'E')	mod = trace[i][j];
-            else	mod = etrace[i][j];
-            *gap += 1;
-        }
-		if (i<0 || j<0)
 		{
-			cout << "This is a bug!" << endl;
-			for (int m = 0; m < M; ++m)
-			{
-				cout << m_aCode2Char[seq1[m]];
-			}
-			cout << endl;
-			for (int n = 0; n < N; ++n)
-			{
-				cout << m_aCode2Char[seq2[n]];
-			}
-			cout << endl;
-			break;
+			int nSz = M+1;
+			bModify = true;
+			trace.clear();
+			etrace.clear();
+			dtrace.clear();
+			trace.assign(nSz, vector<char>(nSz));
+			etrace.assign(nSz, vector<char>(nSz));
+			dtrace.assign(nSz, vector<char>(nSz));
 		}
-    }
+
+	trace[0][0] = '0';
+	for(j = 1; j <= N && j <= be; j ++)
+		{
+			CC[j] = t = t - h; //j - 1 ? or j; when j is used, check score is not the same as alignment score
+			DD[j] = CC[j] - g;
+			if(j == 1)
+				{
+					trace[0][j] = etrace[0][j] = 'E';
+				}
+			else
+				{
+					trace[0][j] = etrace[0][j] = 'e';
+				}
+			dtrace[0][j] = 'D';
+		} //global-alignment, with terminal penalty
+
+	MaxGap = 100;
+	for(i = 1; i <= M; i ++)
+		{
+			bb_pre = bb;
+			be_pre = be;
+			if(be <= bb) break; //band shrinks to zero
+			s = CC[bb - 1];
+			if(i == 1)
+				{
+					trace[i][bb - 1] = dtrace[i][bb - 1] = 'D';
+					etrace[i][bb - 1] = 'E';
+				}
+			else
+				{
+					trace[i][bb - 1] = dtrace[i][bb - 1] = 'd';
+					etrace[i][bb - 1] = 'e';
+				}
+			if(DD[bb - 1] - h > CC[bb - 1] - m)
+				{
+					c = DD[bb - 1] - h;
+				}
+			else
+				{
+					c = CC[bb - 1] - m;
+				}
+			CC[bb - 1] = DD[bb - 1] = c; //update it with current row
+			e = c - g;
+			for(j = bb; j <= be && j <= N; j ++)
+				{
+					trace_e = 'e'; //insertion extension
+					if ((c =   c   - m) >= (e =   e   - h))
+						{
+							e = c;
+							trace_e = 'E';  //new insertion
+						}//insertion
+					trace_d = 'd'; //deletion extension
+					if ((c = CC[j] - m) >= (d = DD[j] - h))
+						{
+							d = c;
+							trace_d = 'D'; //new deletion
+						}//deletion
+					//here   CC[j]==CC[i-1][j]   DD[j]==DD[i-1][j]
+
+					wa = m_aSubMatrix[seq1[i - 1]][seq2[j - 1]];
+					//sij[i - 1][j - 1]; //note i - 1, j - 1
+					c = s + wa; //s==CC[i-1][j-1], substitution
+					trace[i][j] = 's'; //substitution
+
+					if (e > c)
+						{
+							c = e;
+							trace[i][j] = trace_e;
+						}
+					if (d > c)
+						{
+							c = d;
+							trace[i][j] = trace_d;
+						}
+					etrace[i][j] = trace_e;
+					dtrace[i][j] = trace_d;
+					s = CC[j]; //important for next replace
+					CC[j] = c; //CC[i][j]
+					DD[j] = d; //DD[i][j]
+					if(c > maxs)
+						{
+							E1 = i;
+							E2 = j;
+							maxs = c;
+						} //local -C
+					else if(c < maxs - GapExtDrop && j > E2)   //score drops too much, stop filling this row, note j > E2
+						{
+							be = j;
+							break;
+						}
+				}
+			//after band_e, only allows insertion
+			if(be < be_pre) continue;
+			for(j = be + 1; j <= N; j ++)
+				{
+					trace_e = 'e'; //insertion extension
+					if ((c =   c   - m) > (e =   e   - h))
+						{
+							e = c;
+							trace_e = 'E';  //new insertion
+						}//insertion
+					c = e;
+					trace[i][j] = trace_e;
+					etrace[i][j] = trace_e;
+
+					s = CC[j]; //important for next replace
+					CC[j] = c; //CC[i][j]
+					DD[j] = c - g;
+					if(c > maxs)
+						{
+							E1 = i;
+							E2 = j;
+							maxs = c;
+						} //local -C
+					else if(c < maxs - GapExtDrop)   //score drops too much, stop filling this row
+						{
+							be = j;
+							break;
+						}
+				}
+			//now infer new bb (starting from E2 going backward)
+			for(j = E2; j >= bb; j --)
+				{
+					if(CC[j] < maxs - GapExtDrop)
+						{
+							bb = j;
+							break;
+						}
+				}
+		}
+
+	*ext1 = E1;
+	*ext2 = E2;
+
+	delete[] CC;
+	delete[] DD;
+
+	//get alignment
+	*match_len = 0;
+	*gap = 0;
+
+	if(maxs <= 0) return maxs;
+
+
+	if(trace[E1][E2] != 's')
+		{
+			printf("E1 %d E2 %d, Not end with substitution %c\n", E1, E2, trace[E1][E2]);
+			exit(1);
+		}
+
+	char	mod = trace[E1][E2];
+	i = E1;
+	j = E2;
+	vMode.clear();
+	vLen.clear();
+	while(mod != '0' && (!(i == 0 && j == 0)))
+		{
+			if (vMode.empty() || toupper(mod) != toupper(vMode.back()))
+				{
+					vMode.push_back(mod);
+					vLen.push_back(0);
+				}
+			++vLen.back();
+
+			if(mod == 's')
+				{
+					if(seq1[i - 1] == seq2[j - 1]) *match_len += 1;
+					i -= 1;
+					j -= 1;
+					mod = trace[i][j];
+				}
+			else if(mod == 'D' || mod == 'd')
+				{
+					i -= 1;
+					if (mod == 'D')	mod = trace[i][j];
+					else		mod = dtrace[i][j];
+					*gap += 1;
+				}
+			else
+				{
+					j -= 1;
+					if (mod == 'E')	mod = trace[i][j];
+					else	mod = etrace[i][j];
+					*gap += 1;
+				}
+			if (i<0 || j<0)
+				{
+					cout << "This is a bug!" << endl;
+					for (int m = 0; m < M; ++m)
+						{
+							cout << m_aCode2Char[seq1[m]];
+						}
+					cout << endl;
+					for (int n = 0; n < N; ++n)
+						{
+							cout << m_aCode2Char[seq2[n]];
+						}
+					cout << endl;
+					break;
+				}
+		}
 
 	// reset the size of the buffer
 	if (bModify == true)
-	{
-		trace.clear();
-		etrace.clear();
-		dtrace.clear();
-		trace.assign(nMemory, vector<char>(nMemory));
-		etrace.assign(nMemory, vector<char>(nMemory));
-		dtrace.assign(nMemory, vector<char>(nMemory));
-	}
+		{
+			trace.clear();
+			etrace.clear();
+			dtrace.clear();
+			trace.assign(nMemory, vector<char>(nMemory));
+			etrace.assign(nMemory, vector<char>(nMemory));
+			dtrace.assign(nMemory, vector<char>(nMemory));
+		}
 
-    return maxs;
+	return maxs;
 }
 
 
@@ -2198,55 +2197,55 @@ void CHashSearch::CalRes(int nQIdx, uchar* pQ, int nQOriLen, uint unQSeedBeg, in
 	double dEValue = 0.0;
 	dEValue = m_vpBlastSig[nTreadID]->rawScore2ExpectLog(stAlnmnt.nScore);
 	double dBits = m_vpBlastSig[nTreadID]->rawScore2Bit(stAlnmnt.nScore);
-	
+
 	int nTotGap = 0;
 	int nGapOpen = 0;
 	int nTotAlnLen = 0;
 
 	for (uint i = 0; i < stAlnmnt.vMode.size(); ++i)
-	{
-		nTotAlnLen += stAlnmnt.vLen[i];
-		if ('s' != stAlnmnt.vMode[i])
 		{
-			++nGapOpen;
-			nTotGap += stAlnmnt.vLen[i];
+			nTotAlnLen += stAlnmnt.vLen[i];
+			if ('s' != stAlnmnt.vMode[i])
+				{
+					++nGapOpen;
+					nTotGap += stAlnmnt.vLen[i];
+				}
 		}
-	}
 
 	// evalue criteria
 	if (m_bHssp == false && !(stAlnmnt.nScore>SUMHSP_MINRAWSCORE || (m_bEvalue==true && dEValue<=m_dThr) || (m_bEvalue==false && dBits>=m_dThr)))
-	{
-		return;
-	}
+		{
+			return;
+		}
 	// hssp criteria
 	else if (m_bHssp == true && (nTotAlnLen < m_nMinLen || stAlnmnt.nMatch < m_vCriteria[nTotAlnLen]))
-	{
-		return;
-	}
+		{
+			return;
+		}
 
 	// compute frame
 	//cout << nQIdx << endl;
 	int nQSt = 0;
 	int nQEd = 0;
 	if (m_bSeqType == true)
-	{
-		if (nQIdx % m_nIdxScl < 3)
 		{
-			nQSt = 3 * (unQSeedBeg-stAlnmnt.nQBwd) + nQIdx%m_nIdxScl + 1;
-			nQEd = 3 * (unQSeedBeg+unLocalSeedLen+stAlnmnt.nQFwd) + nQIdx%m_nIdxScl;
+			if (nQIdx % m_nIdxScl < 3)
+				{
+					nQSt = 3 * (unQSeedBeg-stAlnmnt.nQBwd) + nQIdx%m_nIdxScl + 1;
+					nQEd = 3 * (unQSeedBeg+unLocalSeedLen+stAlnmnt.nQFwd) + nQIdx%m_nIdxScl;
+				}
+			else
+				{
+					int nFrame = nQIdx % m_nIdxScl - 3;
+					nQSt = nQOriLen - (unQSeedBeg-stAlnmnt.nQBwd)*3 - nFrame;
+					nQEd = nQSt - (stAlnmnt.nQBwd+unLocalSeedLen+stAlnmnt.nQFwd)*3 + 1;
+				}
 		}
-		else
-		{
-			int nFrame = nQIdx % m_nIdxScl - 3;
-			nQSt = nQOriLen - (unQSeedBeg-stAlnmnt.nQBwd)*3 - nFrame;
-			nQEd = nQSt - (stAlnmnt.nQBwd+unLocalSeedLen+stAlnmnt.nQFwd)*3 + 1;
-		}
-	}
 	else
-	{
-		nQSt = unQSeedBeg-stAlnmnt.nQBwd + 1;
-		nQEd = unQSeedBeg+unLocalSeedLen+stAlnmnt.nQFwd;
-	}
+		{
+			nQSt = unQSeedBeg-stAlnmnt.nQBwd + 1;
+			nQEd = unQSeedBeg+unLocalSeedLen+stAlnmnt.nQFwd;
+		}
 
 	// print aligned sequences
 	uint nAllc = nTotAlnLen>unLocalSeedLen?nTotAlnLen:unLocalSeedLen;
@@ -2259,44 +2258,44 @@ void CHashSearch::CalRes(int nQIdx, uchar* pQ, int nQOriLen, uint unQSeedBeg, in
 	uchar* pDAligned = pD + unDSeedBeg - stAlnmnt.nDBwd;
 
 	if (0 == stAlnmnt.vMode.size())
-	{
-		// only one hits
-		vQ.insert(vQ.end(), pQAligned, pQAligned+unLocalSeedLen);
-		vD.insert(vD.end(), pDAligned, pDAligned+unLocalSeedLen);
-	}
-	else if (1 == stAlnmnt.vMode.size())
-	{
-		// only one hits
-		vQ.insert(vQ.end(), pQAligned, pQAligned+stAlnmnt.vLen[0]);
-		vD.insert(vD.end(), pDAligned, pDAligned+stAlnmnt.vLen[0]);
-	}
-	else
-	{
-		for (uint i = 0; i < stAlnmnt.vMode.size(); ++i)
 		{
-			char cMode = stAlnmnt.vMode[i];
-			if ('s' == cMode)
-			{
-				vQ.insert(vQ.end(), pQAligned, pQAligned+stAlnmnt.vLen[i]);
-				pQAligned += stAlnmnt.vLen[i];
-				vD.insert(vD.end(), pDAligned, pDAligned+stAlnmnt.vLen[i]);
-				pDAligned += stAlnmnt.vLen[i];
-			}
-			else if ('D' == cMode || 'd' == cMode)
-			{
-				vQ.insert(vQ.end(), pQAligned, pQAligned+stAlnmnt.vLen[i]);
-				pQAligned += stAlnmnt.vLen[i];
-				vD.insert(vD.end(), stAlnmnt.vLen[i], '-');
-			}
-			else if ('E' == cMode || 'e' == cMode)
-			{
-				vQ.insert(vQ.end(), stAlnmnt.vLen[i], '-');
-				vD.insert(vD.end(), pDAligned, pDAligned+stAlnmnt.vLen[i]);
-				pDAligned += stAlnmnt.vLen[i];
-			}
+			// only one hits
+			vQ.insert(vQ.end(), pQAligned, pQAligned+unLocalSeedLen);
+			vD.insert(vD.end(), pDAligned, pDAligned+unLocalSeedLen);
 		}
-	}
-		
+	else if (1 == stAlnmnt.vMode.size())
+		{
+			// only one hits
+			vQ.insert(vQ.end(), pQAligned, pQAligned+stAlnmnt.vLen[0]);
+			vD.insert(vD.end(), pDAligned, pDAligned+stAlnmnt.vLen[0]);
+		}
+	else
+		{
+			for (uint i = 0; i < stAlnmnt.vMode.size(); ++i)
+				{
+					char cMode = stAlnmnt.vMode[i];
+					if ('s' == cMode)
+						{
+							vQ.insert(vQ.end(), pQAligned, pQAligned+stAlnmnt.vLen[i]);
+							pQAligned += stAlnmnt.vLen[i];
+							vD.insert(vD.end(), pDAligned, pDAligned+stAlnmnt.vLen[i]);
+							pDAligned += stAlnmnt.vLen[i];
+						}
+					else if ('D' == cMode || 'd' == cMode)
+						{
+							vQ.insert(vQ.end(), pQAligned, pQAligned+stAlnmnt.vLen[i]);
+							pQAligned += stAlnmnt.vLen[i];
+							vD.insert(vD.end(), stAlnmnt.vLen[i], '-');
+						}
+					else if ('E' == cMode || 'e' == cMode)
+						{
+							vQ.insert(vQ.end(), stAlnmnt.vLen[i], '-');
+							vD.insert(vD.end(), pDAligned, pDAligned+stAlnmnt.vLen[i]);
+							pDAligned += stAlnmnt.vLen[i];
+						}
+				}
+		}
+
 	string sQ;
 	string sD;
 	Decode(vQ, sQ);
@@ -2304,27 +2303,27 @@ void CHashSearch::CalRes(int nQIdx, uchar* pQ, int nQOriLen, uint unQSeedBeg, in
 
 	string sInfo;
 	for (uint i = 0; i < vQ.size(); ++i)
-	{
-		if (vQ[i] == vD[i])
 		{
-			sInfo += sQ[i];
+			if (vQ[i] == vD[i])
+				{
+					sInfo += sQ[i];
+				}
+			else if (m_aSubMatrix[vQ[i]][vD[i]] > 0)
+				{
+					sInfo += '+';
+				}
+			else
+				{
+					sInfo += ' ';
+				}
 		}
-		else if (m_aSubMatrix[vQ[i]][vD[i]] > 0)
-		{
-			sInfo += '+';
-		}
-		else
-		{
-			sInfo += ' ';
-		}
-	}
 
 	MRESULT::iterator it = mRes.lower_bound(pair<int, int>(nQIdx/m_nIdxScl, nDIdx));
 	/****************************************************************/
 	// for sum evalue, comment this
 	// note: here, the hits are stored according to it's real query index, not 1->6 frame query index
 	// store all results
-	if (mRes.end() != it 
+	if (mRes.end() != it
 			&& (*it).first.first==nQIdx/m_nIdxScl
 			&& (*it).first.second==nDIdx
 			&& (*it).second.nFrame==nQIdx%m_nIdxScl
@@ -2332,10 +2331,32 @@ void CHashSearch::CalRes(int nQIdx, uchar* pQ, int nQOriLen, uint unQSeedBeg, in
 			&& (*it).second.nDSt==unDSeedBeg-stAlnmnt.nDBwd
 			&& (*it).second.nQEd==unQSeedBeg+unLocalSeedLen+stAlnmnt.nQFwd-1
 			&& (*it).second.nDEd==unDSeedBeg+unLocalSeedLen+stAlnmnt.nDFwd-1)
-	{
-		CHitUnit& st = (*it).second;
-		if (st.dEValue > dEValue)
 		{
+			CHitUnit& st = (*it).second;
+			if (st.dEValue > dEValue)
+				{
+					st.nScore = stAlnmnt.nScore;
+					st.dBits = dBits;
+					st.dEValue = dEValue;
+					st.dIdent = stAlnmnt.nMatch*100.0/nTotAlnLen;
+					st.nAlnLen = nTotAlnLen;
+					st.nMismatch = nTotAlnLen-stAlnmnt.nMatch-nTotGap;
+					st.nGapOpen = nGapOpen;
+					st.nQBeg = nQSt;
+					st.nQEnd = nQEd;
+					st.sQ = sQ;
+					st.sInfo = sInfo;
+					st.sD = sD;
+				}
+		}
+	else
+		/****************************************************************/
+		{
+			MRESULT::iterator itTmp = mRes.insert(it, MRESULT::value_type(pair<int, int>(nQIdx/m_nIdxScl, nDIdx), CHitUnit()));
+			CHitUnit& st = (*itTmp).second;
+			st.nQrLen = nQOriLen;
+			st.nDbIdx =	nDIdx;
+			st.nDbLen = Db.m_vLens[nDIdx+1] - Db.m_vLens[nDIdx];
 			st.nScore = stAlnmnt.nScore;
 			st.dBits = dBits;
 			st.dEValue = dEValue;
@@ -2343,40 +2364,18 @@ void CHashSearch::CalRes(int nQIdx, uchar* pQ, int nQOriLen, uint unQSeedBeg, in
 			st.nAlnLen = nTotAlnLen;
 			st.nMismatch = nTotAlnLen-stAlnmnt.nMatch-nTotGap;
 			st.nGapOpen = nGapOpen;
+			st.nFrame = nQIdx%m_nIdxScl;
+			st.nQSt = unQSeedBeg-stAlnmnt.nQBwd;
+			st.nQEd = unQSeedBeg+unLocalSeedLen+stAlnmnt.nQFwd-1;
 			st.nQBeg = nQSt;
 			st.nQEnd = nQEd;
+			st.nDSt = unDSeedBeg - stAlnmnt.nDBwd;
+			st.nDEd = unDSeedBeg + unLocalSeedLen + stAlnmnt.nDFwd - 1;
 			st.sQ = sQ;
 			st.sInfo = sInfo;
 			st.sD = sD;
+			//mRes.insert(it, MRESULT::value_type(pair<int, int>(nQIdx/m_nIdxScl, nDIdx), st));
 		}
-	}
-	else
-	/****************************************************************/
-	{
-		MRESULT::iterator itTmp = mRes.insert(it, MRESULT::value_type(pair<int, int>(nQIdx/m_nIdxScl, nDIdx), CHitUnit()));
-		CHitUnit& st = (*itTmp).second;
-		st.nQrLen = nQOriLen;
-		st.nDbIdx =	nDIdx; 
-		st.nDbLen = Db.m_vLens[nDIdx+1] - Db.m_vLens[nDIdx];
-		st.nScore = stAlnmnt.nScore;
-		st.dBits = dBits;
-		st.dEValue = dEValue;
-		st.dIdent = stAlnmnt.nMatch*100.0/nTotAlnLen;
-		st.nAlnLen = nTotAlnLen;
-		st.nMismatch = nTotAlnLen-stAlnmnt.nMatch-nTotGap;
-		st.nGapOpen = nGapOpen;
-		st.nFrame = nQIdx%m_nIdxScl;
-		st.nQSt = unQSeedBeg-stAlnmnt.nQBwd;
-		st.nQEd = unQSeedBeg+unLocalSeedLen+stAlnmnt.nQFwd-1;
-		st.nQBeg = nQSt;
-		st.nQEnd = nQEd;
-		st.nDSt = unDSeedBeg - stAlnmnt.nDBwd;
-		st.nDEd = unDSeedBeg + unLocalSeedLen + stAlnmnt.nDFwd - 1;
-		st.sQ = sQ;
-		st.sInfo = sInfo;
-		st.sD = sD;
-		//mRes.insert(it, MRESULT::value_type(pair<int, int>(nQIdx/m_nIdxScl, nDIdx), st));
-	}
 }
 
 
@@ -2401,11 +2400,11 @@ void CHashSearch::PrintRes(MRESULT& mRes, int nTreadID, CQrPckg& Query, CDbPckg&
 	MRESULT::iterator itFind = mRes.end();
 	vector<CHitUnit> vTemp;
 	vTemp.reserve(distance(it, itFind));
-	
+
 	// for sum evalue, comment this
 	int nDIdx = it->first.second;
 	vTemp.push_back(it->second);
-	int nSt = 0; 
+	int nSt = 0;
 	MRESULT::iterator itTemp = it;
 	++itTemp;
 	for (; itTemp != itFind; ++itTemp)
@@ -2735,7 +2734,7 @@ void CHashSearch::MergeRes(int nDbBlockNum, VNAMES& vQNames, string& sDbPre)
 
 		m_sStartTime = "";
 	}
-	
+
 	if (m_bXml)
 	{
 		m_ofXml.open((m_sOutBase+".xml").c_str(),ios_base::out|ios_base::app);
@@ -2752,7 +2751,7 @@ void CHashSearch::MergeRes(int nDbBlockNum, VNAMES& vQNames, string& sDbPre)
 		CMergeUnit* p = new CMergeUnit(sName.c_str());
 		vMergeUnit.push_back(p);
 	}
-	
+
 	int nLastIdx = 0;
 	for (int i = 0; i < nDbBlockNum; ++i)
 	{
@@ -2851,26 +2850,26 @@ int CHashSearch::GuessQueryType(POOL& vPool)
 		itEd = find(itSt+1, itStop, '>');
 	}
 
-    char	nuc[] = "ATCGatcgUu";
-    int	i, j;
-    int	add = 0;
-    for(i = 0; i < seq.size(); i ++)
-    {
-        for(j = 0; j < 10; j ++)
-        {
-            if(seq[i] == nuc[j]) break;
-        }
-        if(j < 10) add += 1;
-    }
+		char	nuc[] = "ATCGatcgUu";
+		int	i, j;
+		int	add = 0;
+		for(i = 0; i < seq.size(); i ++)
+		{
+				for(j = 0; j < 10; j ++)
+				{
+						if(seq[i] == nuc[j]) break;
+				}
+				if(j < 10) add += 1;
+		}
 
-    if(add > seq.size() * 0.95)
-    {
+		if(add > seq.size() * 0.95)
+		{
 		return 1;
-    }
-    else
-    {
+		}
+		else
+		{
 		return 2;
-    }
+		}
 }
 
 
@@ -2920,7 +2919,7 @@ void CHashSearch::PrintM8(vector<CHitUnit>& v, ostream& of)
 			<< "\t" << c.dIdent
 			<< "\t"	<< c.nAlnLen
 			<< "\t"	<< c.nMismatch
-			<< "\t"	<< c.nGapOpen 
+			<< "\t"	<< c.nGapOpen
 			<< "\t" << c.nQBeg
 			<< "\t" << c.nQEnd
 			<< "\t" << c.nDSt
@@ -2951,7 +2950,7 @@ void CHashSearch::PrintM8(vector<CHitUnit>& v, ostream& of)
 			}
 		}
 		of << setprecision(1) << setiosflags(ios::fixed)
-			<< "\t"	<< c.dBits 
+			<< "\t"	<< c.dBits
 			<< "\n";
 	}
 }

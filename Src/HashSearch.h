@@ -137,27 +137,27 @@ public:
 
 private:
 	// read file and build the hash table
-	int BuildDHash(const char* szDbFile, string& sOutFile, int nSplitNum, bool bFullId); 
+	int BuildDHash(const char* szDbFile, string& sOutFile, int nSplitNum, bool bFullId);
 	// read file and build the hash table
-	int BuildQHash(istream& input, int nQueryType, map<string,char>& mTransTable, map<char,char>& mComple, Seg* seg, Seg* segsht, vector<uchar>& vQSeqs, vector<uint>& vQLens, VNAMES& vQNames); 
+	int BuildQHash(istream& input, int nQueryType, map<string,char>& mTransTable, map<char,char>& mComple, Seg* seg, Seg* segsht, vector<uchar>& vQSeqs, vector<uint>& vQLens, VNAMES& vQNames);
 	// probe that what is the type of query
 	int GuessQueryType(POOL& vPool);
 	// char -> compressed code
-	void Encode(VUCHAR& v); 
+	void Encode(VUCHAR& v);
 	// char -> compressed code & count DB
-	long int Encode(VUCHAR& v, vector<double>& vFreq); 
+	long int Encode(VUCHAR& v, vector<double>& vFreq);
 	// compressed code -> char
-	void Decode(const vector<uchar>& v, string& sOut); 
+	void Decode(const vector<uchar>& v, string& sOut);
 	// char -> 10-base index
-	int Tran2Ten(const vector<uchar>& v, uint nBeg); 
+	int Tran2Ten(const vector<uchar>& v, uint nBeg);
 	// char -> 10-base index
-	int Tran2Ten(CAlnPckg& QrAln, vector<char>& vValid); 
+	int Tran2Ten(CAlnPckg& QrAln, vector<char>& vValid);
 
 	// search all sequences in database
 	void Search(string& sDbPre, int nSeqNum, vector<uchar>& vQSeqs, vector<uint>& vQLens, VNAMES& vQNames);
 	// search for each search in database
-	void Searching(int nQrIdx, CQrPckg& Query, CDbPckg& Db); 
-	void ExtendSetPair(int nLen, CQrPckg& Query, CDbPckg& Db); 
+	void Searching(int nQrIdx, CQrPckg& Query, CDbPckg& Db);
+	void ExtendSetPair(int nLen, CQrPckg& Query, CDbPckg& Db);
 	// search for each seed in a entry of database
 	int  ExtendSeq2Set(int nSeed, uint unSeedLen, vector<uchar>& vExtra,
 			int nQSeqIdx, CAlnPckg& QrAln, int nQOriLen, vector<char>& vValid,
@@ -175,11 +175,11 @@ private:
 	int AlignGapped(uchar *seq1, uchar *seq2, int M, int N, int *ext1, int *ext2, int *match_len, int *gap, vector<char>& vMode, vector<short>& vLen, int nTreadID);
 	// retrieve a sequence according to a seed
 	uchar* GetSeq(VUCHAR& vSeqs, VUINT& vLen, VNAMES& vNames, uint& unPos, uint& unLen, uint& unSeedBeg);
-	
+
 	// reset the struct
 	void ResetResult(STAlnmnt& stAlnmnt);
 
-	// calculate e-value and generate the subsequence 
+	// calculate e-value and generate the subsequence
 	void CalRes(int nQIdx, uchar* pQ, int nQLen, uint unQSeedBeg, int nDIdx, uchar* pD, uint unDSeedBeg, CDbPckg& Db, uint unLocalSeedLen, STAlnmnt& stAlnmnt, MRESULT& mRes, int nTreadID);
 	// calculate e-values of multi hits
 	void SumEvalue(vector<CHitUnit>& v, int nSt, int nEd, int nLen, int nTreadID);
