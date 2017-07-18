@@ -21,12 +21,6 @@ else
 	CXXFLAGS +=
 endif
 
-#INC := -I ~/include
-INC := -I ./
-
-#LIBS := -L ~/lib
-LIBS := -L ./
-
 all: rapsearch prerapsearch
 
 rapsearch: main.cpp $(objects)
