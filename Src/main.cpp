@@ -22,7 +22,6 @@ using namespace std;
 #define OPTION_BITS "i"
 #define OPTION_LOGE "s"
 #define	Program	"rapsearch"
-#define	Version "2.24"
 
 void printUsage(const char *error);
 
@@ -239,7 +238,7 @@ void printUsage(const char *error)
     fprintf(stderr,
             "%s v%s: Fast protein similarity search tool for proteins / short reads\n"
             "-------------------------------------------------------------------------------\n",
-	    Program, Version);
+	    Program, PROJECT_VERSION);
     fprintf(stderr,
             " Options: \n"
             "\t-" OPTION_QUERY        " string : query file or stdin (FASTA or FASTQ format)\n"
