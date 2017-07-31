@@ -145,6 +145,7 @@ CHashSearch::CHashSearch(int nThreadNum)
 	m_nStdout = 0;
 	m_sQFile = "";
 	m_sDFile = "";
+	m_sDInfoFile = "";
 	m_sStartTime = "";
 	m_sLeft = "";
 }
@@ -464,31 +465,31 @@ int CHashSearch::BuildQHash(istream& input, int nQueryType, map<string,char>& mT
 	m_nQueryType = nQueryType;
 	if (1 == m_nQueryType)
 	{
-	  // nt
-	  m_bSeqType = true;
-	  m_nIdxScl = 6;
-	  // Ummm, no output please, that will interfere with streaming to STDOUT
-	  // We *could* output to cerr though
-	  //printf("Queries are nucleotide sequences in fasta format\n");
+		// nt
+		m_bSeqType = true;
+		m_nIdxScl = 6;
+		// Ummm, no output please, that will interfere with streaming to STDOUT
+		// We *could* output to cerr though
+		//printf("Queries are nucleotide sequences in fasta format\n");
 	}
 	else if (2 == m_nQueryType)
 	{
-	  // aa
-	  m_bSeqType = false;
-	  // Ummm, no output please, that will interfere with streaming to STDOUT
-	  // We *could* output to cerr though
-	  //printf("Queries are protein sequences\n");
+		// aa
+		m_bSeqType = false;
+		// Ummm, no output please, that will interfere with streaming to STDOUT
+		// We *could* output to cerr though
+		//printf("Queries are protein sequences\n");
 	}
 	else if (3 == m_nQueryType)
 	{
-	  // fastq
-	  m_bSeqType = true;
-	  m_nIdxScl = 6;
-	  cIdSt = '@';
-	  cSeqEd = '+';
-	  // Ummm, no output please, that will interfere with streaming to STDOUT
-	  // We *could* output to cerr though
-	  //printf("Queries are nucleotide sequences in fastq format\n");
+		// fastq
+		m_bSeqType = true;
+		m_nIdxScl = 6;
+		cIdSt = '@';
+		cSeqEd = '+';
+		// Ummm, no output please, that will interfere with streaming to STDOUT
+		// We *could* output to cerr though
+		//printf("Queries are nucleotide sequences in fastq format\n");
 	}
 
 	int nSeqNum = 0;
@@ -735,10 +736,19 @@ int CHashSearch::BuildQHash(istream& input, int nQueryType, map<string,char>& mT
 }
 
 
-void CHashSearch::Search(string& sDbPre, int nSeqNum, vector<uchar>& vQSeqs, vector<uint>& vQLens, VNAMES& vQNames)
+void CHashSearch::Search(string& sDbPre, string& sDbInfo, int nSeqNum, vector<uchar>& vQSeqs, vector<uint>& vQLens, VNAMES& vQNames)
 {
 	ifstream ifD(sDbPre.c_str());
-	ifstream ifDInfo((sDbPre+".info").c_str());
+	char* cDbInfo;
+	string sDbTemp;
+	if (sDbInfo.empty()) {
+		sDbTemp = sDbPre+".info";
+		cDbInfo = (char*)sDbTemp.c_str();
+		} else {
+		cDbInfo = (char*)sDbInfo.c_str();
+	}
+	ifstream ifDInfo(cDbInfo);
+
 	if (!ifD.good() || !ifDInfo.good())
 	{
 		ifstream if1((sDbPre+".des").c_str());
@@ -883,7 +893,7 @@ void CHashSearch::Search(string& sDbPre, int nSeqNum, vector<uchar>& vQSeqs, vec
 }
 
 
-void CHashSearch::Process(char* szDBFile, char* szQFile, char* szOFile, int nStdout, bool bEvalue, bool bLogE, double dThr, int nMaxOut, int nMaxM8, int nQueryType, bool bPrintEmpty, bool bGapExt, bool bAcc, bool bHssp, int nMinLen, bool bXml, uint unDSize, uint unQSize, uint unMer)
+void CHashSearch::Process(char* szDBFile, char* szDBInfoFile, char* szQFile, char* szOFile, int nStdout, bool bEvalue, bool bLogE, double dThr, int nMaxOut, int nMaxM8, int nQueryType, bool bPrintEmpty, bool bGapExt, bool bAcc, bool bHssp, int nMinLen, bool bXml, uint unDSize, uint unQSize, uint unMer)
 {
 	m_bEvalue = bEvalue;
 	m_bLogE = bLogE;
@@ -951,6 +961,7 @@ void CHashSearch::Process(char* szDBFile, char* szQFile, char* szOFile, int nStd
 
 	m_sQFile = szQFile;
 	m_sDFile = szDBFile;
+	m_sDInfoFile = szDBInfoFile;
 	m_nStdout = nStdout;
 	if (szOFile != NULL)
 	{
@@ -1033,7 +1044,11 @@ void CHashSearch::Process(char* szDBFile, char* szQFile, char* szOFile, int nStd
 	while ((nSeqNum=BuildQHash(input, nQueryType, mTransTable, mComple, seg, segsht, vQSeqs, vQLens, vQNames)) > 0)
 	{
 		string sDbOut(szDBFile);
-		Search(sDbOut, nSeqNum, vQSeqs, vQLens, vQNames);
+		string sDbInfo = "";
+		if (szDBInfoFile != NULL) {
+			sDbInfo = szDBInfoFile;
+		}
+		Search(sDbOut, sDbInfo, nSeqNum, vQSeqs, vQLens, vQNames);
 		vQSeqs.clear();
 		vQLens.clear();
 		vQNames.clear();

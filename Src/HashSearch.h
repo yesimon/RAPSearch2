@@ -131,7 +131,7 @@ public:
 	}
 
 	// do the protein database search
-	void Process(char* szDBFile, char* szQFile, char* szOFile, int nStdout, bool bEvalue, bool bLogE, double dThr, int nMaxOut, int nMaxM8, int nQueryTypeq, bool bPrintEmpty, bool bGapExt, bool bAcc, bool bHssp, int nMinLen, bool bXml, uint unDSize = 300000000, uint unQSize = 500000000, uint unMer = 6);
+	void Process(char* szDBFile, char* szDBInfoFile, char* szQFile, char* szOFile, int nStdout, bool bEvalue, bool bLogE, double dThr, int nMaxOut, int nMaxM8, int nQueryTypeq, bool bPrintEmpty, bool bGapExt, bool bAcc, bool bHssp, int nMinLen, bool bXml, uint unDSize = 300000000, uint unQSize = 500000000, uint unMer = 6);
 	// indexing the database
 	void Process(char* szDBFile, char* szDbHash, bool bFullId, int nSplitNum = 0, uint unMer = 6);
 
@@ -154,7 +154,7 @@ private:
 	int Tran2Ten(CAlnPckg& QrAln, vector<char>& vValid);
 
 	// search all sequences in database
-	void Search(string& sDbPre, int nSeqNum, vector<uchar>& vQSeqs, vector<uint>& vQLens, VNAMES& vQNames);
+	void Search(string& sDbPre, string& sDbInfo, int nSeqNum, vector<uchar>& vQSeqs, vector<uint>& vQLens, VNAMES& vQNames);
 	// search for each search in database
 	void Searching(int nQrIdx, CQrPckg& Query, CDbPckg& Db);
 	void ExtendSetPair(int nLen, CQrPckg& Query, CDbPckg& Db);
@@ -266,6 +266,7 @@ private:
 	string m_sStartTime;
 	string m_sQFile;
 	string m_sDFile;
+	char* m_sDInfoFile;
 	ofstream m_ofTemp;
 	int m_nStdout;
 
